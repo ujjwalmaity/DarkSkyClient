@@ -5,18 +5,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import services.WeatherServiceProvider;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView textView;
+    @BindView(R.id.main_tempTextView)
+    TextView tempTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textView = findViewById(R.id.main_textView);
+        ButterKnife.bind(this);
 
         requestCurrentWeather(22.575504, 88.432871);
     }
