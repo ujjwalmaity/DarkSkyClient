@@ -18,7 +18,11 @@ public class MainActivity extends AppCompatActivity {
 
         textView = findViewById(R.id.main_textView);
 
+        requestCurrentWeather(22.575504, 88.432871);
+    }
+
+    private void requestCurrentWeather(double lat, double lng) {
         WeatherServiceProvider weatherServiceProvider = new WeatherServiceProvider();
-        weatherServiceProvider.getWeather();
+        weatherServiceProvider.getWeather(lat, lng);
     }
 }
