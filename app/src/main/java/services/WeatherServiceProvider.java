@@ -2,6 +2,9 @@ package services;
 
 import android.util.Log;
 
+import org.greenrobot.eventbus.EventBus;
+
+import events.WeatherEvent;
 import models.Currently;
 import models.Weather;
 import retrofit2.Call;
@@ -26,9 +29,22 @@ public class WeatherServiceProvider {
         return this.retrofit;
     }
 
-    public void getWeather(double lat, double lng, Callback callback) {
+    public void getWeather(double lat, double lng) {
         WeatherService weatherService = getRetrofit().create(WeatherService.class);
         Call<Weather> weatherData = weatherService.getWeather(lat, lng);
-        weatherData.enqueue(callback);
+        weatherData.enqueue(new Callback<Weather>() {
+            @Override
+            public void onResponse(Call<Weather> call, Response<Weather> response) {
+                Weather weather = response.body();
+                Currently currently = weather.getCurrently();
+                Log.i(TAG, "Temperature = " + currently.getTemperature());
+                EventBus.getDefault().post(new WeatherEvent(weather));
+            }
+
+            @Override
+            public void onFailure(Call<Weather> call, Throwable t) {
+                Log.i(TAG, "onFailure: Unable to get weather data");
+            }
+        });
     }
 }
