@@ -4,6 +4,7 @@ import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 
+import events.ErrorEvent;
 import events.WeatherEvent;
 import models.Currently;
 import models.Weather;
@@ -36,14 +37,20 @@ public class WeatherServiceProvider {
             @Override
             public void onResponse(Call<Weather> call, Response<Weather> response) {
                 Weather weather = response.body();
-                Currently currently = weather.getCurrently();
-                Log.i(TAG, "Temperature = " + currently.getTemperature());
-                EventBus.getDefault().post(new WeatherEvent(weather));
+                if (weather != null) {
+                    Currently currently = weather.getCurrently();
+                    Log.i(TAG, "Temperature = " + currently.getTemperature());
+                    EventBus.getDefault().post(new WeatherEvent(weather));
+                } else {
+                    Log.i(TAG, "onResponse: Check secret key");
+                    EventBus.getDefault().post(new ErrorEvent("No weather data available"));
+                }
             }
 
             @Override
             public void onFailure(Call<Weather> call, Throwable t) {
                 Log.i(TAG, "onFailure: Unable to get weather data");
+                EventBus.getDefault().post(new ErrorEvent("Unable to connect weather server"));
             }
         });
     }
