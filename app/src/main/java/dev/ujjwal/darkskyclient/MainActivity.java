@@ -55,7 +55,9 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onWeatherEvent(WeatherEvent weatherEvent) {
         Currently currently = weatherEvent.getWeather().getCurrently();
-        tempTextView.setText(String.valueOf(Math.round(currently.getTemperature())));
+        Double fahrenheit = currently.getTemperature();
+        Double celsius = (fahrenheit - 32) * 5 / 9;
+        tempTextView.setText(String.valueOf(Math.round(celsius)));
         summeryTextView.setText(currently.getSummary());
 
         iconImageView.setImageResource(WeatherIconUtil.ICONS.get(currently.getIcon()));
